@@ -361,3 +361,7 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+
+# Ignore MySql data bind mount directory
+/Kartverket.Aspire/Kartverket.Aspire.AppHost/MySql/Data/

@@ -3,8 +3,9 @@ var builder = DistributedApplication.CreateBuilder(args);
 
 
 var mysql = builder.AddMySql("mysql")
-                   .WithDataBindMount(source: @"C:\MySql\Data") // Adjust the path as needed
+                   .WithDataBindMount(source: @"./MySql/Data") // Changed to relative path
                    .WithLifetime(ContainerLifetime.Persistent);
+
 
 var mysqldb = mysql.AddDatabase("mysqldb");
 
