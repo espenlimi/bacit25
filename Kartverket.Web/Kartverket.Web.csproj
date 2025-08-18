@@ -4,7 +4,14 @@
     <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>2c1b5347-c4dd-4533-a89a-ea3a753c970e</UserSecretsId>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Aspire.MySqlConnector" Version="9.4.1" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.22.1" />
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Kartverket.Aspire\Kartverket.Aspire.ServiceDefaults\Kartverket.Aspire.ServiceDefaults.csproj" />

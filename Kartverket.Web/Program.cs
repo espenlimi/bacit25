@@ -4,7 +4,7 @@ builder.AddServiceDefaults();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-
+builder.AddMySqlDataSource(connectionName: "mysqldb");
 var app = builder.Build();
 
 app.MapDefaultEndpoints();
