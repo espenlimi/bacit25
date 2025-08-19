@@ -1,14 +1,7 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using System.Reflection.Emit;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace Kartverket.Web.Data
 {
-    public class TableClass
-    {
-        public long Id { get; set; }
-        public string Name { get; set; } = string.Empty;
-    }
 
     public class DataContext : DbContext
     {
