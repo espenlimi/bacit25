@@ -1,14 +1,25 @@
+using Kartverket.Web.Data;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-builder.AddMySqlDataSource(connectionName: "mysqldb");
+var connectionName = "kartverketdb";
+builder.AddMySqlDataSource(connectionName: connectionName);
+
+builder.Services.AddDbContext<DataContext>(options =>
+{
+    options.UseMySql(builder.Configuration.GetConnectionString(connectionName), ServerVersion.AutoDetect(builder.Configuration.GetConnectionString(connectionName)));
+});
+
+
 var app = builder.Build();
 
 app.MapDefaultEndpoints();
-
+app.Services.GetRequiredService<DataContext>().Database.Migrate();
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
