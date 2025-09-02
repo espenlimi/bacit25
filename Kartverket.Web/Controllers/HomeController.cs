@@ -8,6 +8,7 @@ public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
 
+// Send avhengighet til konstruktøren
     public HomeController(ILogger<HomeController> logger)
     {
         _logger = logger;
@@ -18,20 +19,7 @@ public class HomeController : Controller
         return View();
     }
 
-    // blir kalt etter at vi trykker på "Register Obstacle" lenken i Index viewet
-[HttpGet]
-public ActionResult DataForm()
-{
-    return View();
-}
-
-
-// blir kalt etter at vi trykker på "Submit Data" knapp i DataForm viewet
-[HttpPost]
-public ActionResult DataForm(ObstacleData obstacledata)
-{
-    return View("Overview", obstacledata);
-}
+    
 
     public IActionResult Privacy()
     {
