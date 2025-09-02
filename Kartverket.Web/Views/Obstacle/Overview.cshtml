@@ -1,0 +1,36 @@
+@model Kartverket.Web.Models.ObstacleData
+
+@{
+    ViewData["Title"] = "Overview";
+}
+
+<section class="mx-auto max-w-2xl">
+    <div class="bg-white rounded-2xl shadow-sm ring-1 ring-gray-200 p-6 space-y-4">
+        <header>
+            <h1 class="text-2xl font-semibold">Overview</h1>
+            <p class="text-gray-600 mt-1">Thank you for registering an obstacle:</p>
+        </header>
+
+        <dl class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div class="sm:col-span-1">
+                <dt class="text-sm font-medium text-gray-600">Obstacle Name</dt>
+                <dd class="mt-1 text-base text-gray-900 break-words">@Model.ObstacleName</dd>
+            </div>
+            <div class="sm:col-span-1">
+                <dt class="text-sm font-medium text-gray-600">Height (m)</dt>
+                <dd class="mt-1 text-base text-gray-900">@Model.ObstacleHeight</dd>
+            </div>
+            <div class="sm:col-span-1">
+                <dt class="text-sm font-medium text-gray-600">Description</dt>
+                <dd class="mt-1 text-base text-gray-900 break-words sm:col-span-3">@Model.ObstacleDescription</dd>
+            </div>
+        </dl>
+
+        <div class="pt-2">
+            <a asp-controller="Home" asp-action="Index"
+               class="inline-flex items-center rounded-lg px-4 py-2 ring-1 ring-gray-300 hover:bg-gray-50">
+                Back to Home
+            </a>
+        </div>
+    </div>
+</section>
