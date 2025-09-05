@@ -1,4 +1,158 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - FirstWebApplication</title>
+
+    <!-- Tailwind (CDN for quick start). For production, use a proper build pipeline. -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // Optionally extend Tailwind (example keeps it minimal)
+        tailwind.config = {
+          theme: {
+            extend: {
+              container: { center: true, padding: { DEFAULT: '1rem', md: '1.5rem' } }
+            }
+          }
+        }
+    </script>
+
+    <!-- Your app/site styles if needed -->
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/FirstWebApplication.styles.css" asp-append-version="true" />
+</head>
+<body class="min-h-screen flex flex-col bg-gray-50 text-gray-900">
+    <!-- Header / Nav -->
+    <header class="border-b bg-white">
+        <nav class="container flex items-center justify-between py-3">
+            <a class="text-lg font-semibold tracking-tight hover:text-indigo-600 transition-colors"
+               asp-area="" asp-controller="Home" asp-action="Index">
+                FirstWebApplication
+            </a>
+
+            <!-- Mobile menu button -->
+            <button id="navToggle"
+                    class="inline-flex items-center justify-center rounded-md p-2 ring-1 ring-gray-300 hover:bg-gray-100 md:hidden"
+                    aria-controls="primaryNav"
+                    aria-expanded="false"
+                    aria-label="Toggle navigation">
+                <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+            </button>
+
+            <!-- Links -->
+            <div id="primaryNav"
+                 class="hidden w-full md:w-auto md:flex md:items-center md:gap-6">
+                <ul class="mt-3 flex flex-col gap-2 md:mt-0 md:flex-row md:items-center">
+                    <li>
+                        <a class="block rounded-md px-3 py-2 hover:bg-gray-100 hover:text-indigo-700"
+                           asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                    </li>
+                    <li>
+                        <a class="block rounded-md px-3 py-2 hover:bg-gray-100 hover:text-indigo-700"
+                           asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main -->
+    <div class="container flex-1 w-full">
+        <main role="main" class="py-6">
+            @RenderBody()
+        </main>
+    </div>
+
+    <!-- Footer -->
+    <footer class="border-t bg-white text-sm text-gray-600">
+        <div class="container py-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+            <p>&copy; 2025 - FirstWebApplication</p>
+            <p>
+                <a class="text-indigo-700 hover:underline"
+                   asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            </p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        // Simple mobile nav toggle (no Bootstrap)
+        const navToggle = document.getElementById('navToggle');
+        const primaryNav = document.getElementById('primaryNav');
+        if (navToggle && primaryNav) {
+          navToggle.addEventListener('click', () => {
+            const expanded = navToggle.getAttribute('aria-expanded') === 'true';
+            navToggle.setAttribute('aria-expanded', String(!expanded));
+            primaryNav.classList.toggle('hidden');
+          });
+        }
+    </script>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
+
+
+@* <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - FirstWebApplication</title>
+    <script type="importmap"></script>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/FirstWebApplication.styles.css" asp-append-version="true" />
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container-fluid">
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">FirstWebApplication</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2025 - FirstWebApplication - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
+ *@
+
+
+
+@*﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -48,3 +202,4 @@
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
+*@
