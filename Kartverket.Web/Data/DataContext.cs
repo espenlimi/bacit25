@@ -17,6 +17,12 @@ namespace Kartverket.Web.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
+            modelBuilder.Entity<TableClass>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Name).IsRequired().HasMaxLength(100);
+            });
+            
             base.OnModelCreating(modelBuilder);
         }
 

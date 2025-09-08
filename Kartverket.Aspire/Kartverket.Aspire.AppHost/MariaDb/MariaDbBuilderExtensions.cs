@@ -25,7 +25,7 @@ namespace Kartverket.Aspire.AppHost.MariaDb
             ArgumentNullException.ThrowIfNull(builder);
             ArgumentException.ThrowIfNullOrEmpty(name);
 
-            var passwordParameter = password?.Resource ?? ParameterResourceBuilderExtensions.CreateDefaultPasswordParameter(builder, $"{name}-password");
+            var passwordParameter = password?.Resource ?? ParameterResourceBuilderExtensions.CreateDefaultPasswordParameter(builder, $"{name}-password",true,true,true,false);
 
             var resource = new MariaDbServerResource(name, passwordParameter);
 

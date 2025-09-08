@@ -19,7 +19,9 @@ builder.Services.AddDbContext<DataContext>(options =>
 var app = builder.Build();
 
 app.MapDefaultEndpoints();
-app.Services.GetRequiredService<DataContext>().Database.Migrate();
+var dataContext = app.Services.GetRequiredService<DataContext>();
+
+dataContext.Database.Migrate();
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
