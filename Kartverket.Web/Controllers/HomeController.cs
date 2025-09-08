@@ -7,16 +7,27 @@ namespace Kartverket.Web.Controllers;
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
+    //private readonly string _connectionString;
 
-    public HomeController(ILogger<HomeController> logger)
+public HomeController(ILogger<HomeController> logger)
     {
         _logger = logger;
     }
 
+/*
+// Send avhengighet til konstruktøren
+    public HomeController(ILogger<HomeController> logger, IConfiguration config)
+    {
+        _logger = logger;
+        _connectionString = config.GetConnectionString("DefaultConnection")!;
+    }
+*/
     public IActionResult Index()
     {
         return View();
     }
+
+    
 
     public IActionResult Privacy()
     {
