@@ -14,4 +14,7 @@ public class ObstacleData
     public string ObstacleDescription { get; set; }
 
     public bool IsDraft { get; set; }
+
+    // Felt som beholder koordinatene til hinderets lokasjon
+    public string? GeometryGeoJson { get; set; }
 }
