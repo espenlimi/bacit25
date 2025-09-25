@@ -1,30 +1,31 @@
+using Kartverket.Aspire.AppHost.MariaDb;
 
 var builder = DistributedApplication.CreateBuilder(args);
 
 
-var mysql = builder.AddMySql("mysql")
-                   .WithDataBindMount(source: @"../../../MySql/Data") // Changed to relative path
+var mariaDbServer = builder.AddMariaDb("mariadb")
+                   .WithDataBindMount(source: @"../../../MariaDb/Data")
                    .WithLifetime(ContainerLifetime.Persistent);
 
 
-var mysqldb = mysql.AddDatabase("mysqldb");
+var mariaDb = mariaDbServer.AddDatabase("kartverketdb");
 
 //Bruk enten dockerfile varianten eller native, ikke begge 
 
 //Variant dockerfile
-builder.AddDockerfile("kartverket-web", "../../", "Kartverket.Web/Dockerfile")
-                       .WithExternalHttpEndpoints()
-                       .WithReference(mysqldb)
-                       .WaitFor(mysqldb)
-                       .WithHttpEndpoint(port: 8080, targetPort: 8080, name: "kartverket-web");
+//builder.AddDockerfile("kartverket-web", "../../", "Kartverket.Web/Dockerfile")
+//                       .WithExternalHttpEndpoints()
+//                       .WithReference(mariaDb)
+//                       .WaitFor(mariaDb)
+//                       .WithHttpEndpoint(port: 8080, targetPort: 8080, name: "kartverket-web");
 
 
 //Det tar en time å gå ned til Ørsta rådhus!
 
 //Variant native 
-/*builder.AddProject<Projects.Kartverket_Web>("kartverket-web")
-                       .WithReference(mysqldb)                      
-                       .WaitFor(mysqldb); 
-*/
+builder.AddProject<Projects.Kartverket_Web>("kartverket-web")
+                       .WithReference(mariaDb)
+                       .WaitFor(mariaDb);
+
 
 builder.Build().Run();

@@ -1,10 +1,24 @@
+using Kartverket.Web.Data;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddServiceDefaults();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-builder.AddMySqlDataSource(connectionName: "mysqldb");
+var connectionName = "kartverketdb";
+builder.AddMySqlDataSource(connectionName: connectionName);
+
+
+var connectionString = builder.Configuration.GetConnectionString(connectionName);
+
+builder.Services.AddDbContext<DataContext>(options =>
+{
+    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
+});
+
+
 var app = builder.Build();
 
 /*
@@ -14,9 +28,25 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 // Register your service that uses the connection
 builder.Services.AddSingleton(new MySqlConnection(connectionString));
 */
-
-
 app.MapDefaultEndpoints();
+using (var scope = app.Services.CreateScope()) 
+{
+    /*
+    Migration howto:   
+    1. Remember to install dotnet tool install --global dotnet-ef
+    2. Run the aspire application
+    3. Fetch the connection string (set a break point after getting the ConnectionString value from configuration)
+    4. Use the connectionstring value in appsettings.js under connectionstrings
+    5. While the application is running, move to the package manager console and run the command "dotnet ef migrations add InitialCreate -c DataContext -o Data/Migrations -v"
+        InitialCreate is the name of the migration, and should reflect changes being done, eg AddTableName, AlterTableNameToFixSomeStuff etc.. 
+        DataContext refers to an actual classname, so this must be correct for your code
+        Data/Migrations sets the location of migrations  
+    6. Restart the application, the code below db.Database.Migrate(); should apply the changes to the database
+    */
+
+    var db = scope.ServiceProvider.GetRequiredService<DataContext>(); 
+    db.Database.Migrate(); 
+}
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
