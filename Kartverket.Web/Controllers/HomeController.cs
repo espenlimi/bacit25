@@ -42,18 +42,21 @@ public class HomeController : Controller
         
     }
 
-    public IActionResult GetAThing(int id) 
-    {
-        _logger.LogInformation("GetAThing called with id {Id}", id);
-        if (id > 10) 
-        {
-            return View(new ThingModel { Name = "Espen" });
-        }
-        return View(new ThingModel { Name = "Rania" });
+    // blir kalt etter at vi trykker på "Register Obstacle" lenken i Index viewet
+[HttpGet]
+public ActionResult DataForm()
+{
+    return View();
+}
 
-    }
 
-    
+// blir kalt etter at vi trykker på "Submit Data" knapp i DataForm viewet
+[HttpPost]
+public ActionResult DataForm(ObstacleData obstacledata)
+{
+    return View("Overview", obstacledata);
+}
+
 
     public IActionResult Privacy()
     {
