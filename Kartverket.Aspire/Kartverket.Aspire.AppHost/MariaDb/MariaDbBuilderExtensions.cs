@@ -178,7 +178,7 @@ namespace Kartverket.Aspire.AppHost.MariaDb
         {
             ArgumentNullException.ThrowIfNull(builder);
 
-            return builder.WithVolume(name ?? VolumeNameGenerator.Generate(builder, "data"), "/var/lib/mysql", isReadOnly);
+            return builder.WithVolume(name ?? VolumeNameGenerator.Generate(builder, "data"), "/var/lib/mariadb", isReadOnly);
         }
 
         /// <summary>
@@ -193,7 +193,7 @@ namespace Kartverket.Aspire.AppHost.MariaDb
             ArgumentNullException.ThrowIfNull(builder);
             ArgumentException.ThrowIfNullOrEmpty(source);
 
-            return builder.WithBindMount(source, "/var/lib/mysql", isReadOnly);
+            return builder.WithBindMount(source, "/var/lib/mariadb", isReadOnly);
         }
 
         /// <summary>
