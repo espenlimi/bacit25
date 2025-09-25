@@ -8,14 +8,25 @@ namespace Kartverket.Web.Controllers;
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
+    private readonly IConfiguration config;
     private readonly DataContext dataContext;
 
-    public HomeController(ILogger<HomeController> logger, DataContext dataContext)
+    public HomeController(ILogger<HomeController> logger, DataContext dataContext, IConfiguration config)
+
     {
         _logger = logger;
+        this.config = config;
         this.dataContext = dataContext;
     }
 
+/*
+// Send avhengighet til konstruktøren
+    public HomeController(ILogger<HomeController> logger, IConfiguration config)
+    {
+        _logger = logger;
+        _connectionString = config.GetConnectionString("DefaultConnection")!;
+    }
+*/
     public IActionResult Index()
     {
 
@@ -30,6 +41,19 @@ public class HomeController : Controller
 
         
     }
+
+    public IActionResult GetAThing(int id) 
+    {
+        _logger.LogInformation("GetAThing called with id {Id}", id);
+        if (id > 10) 
+        {
+            return View(new ThingModel { Name = "Espen" });
+        }
+        return View(new ThingModel { Name = "Rania" });
+
+    }
+
+    
 
     public IActionResult Privacy()
     {

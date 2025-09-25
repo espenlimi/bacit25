@@ -1,0 +1,135 @@
+@model Kartverket.Web.Models.ObstacleData
+@{
+    ViewData["Title"] = "Register Obstacle";
+}
+
+<section class="mx-auto max-w-2xl">
+    <div class="bg-white rounded-2xl shadow-sm ring-1 ring-gray-200 p-6">
+        <header class="mb-6">
+            <h1 class="text-2xl font-semibold">Obstacle Registration Form</h1>
+            <p class="text-gray-600 mt-1">Please register an obstacle:</p>
+        </header>
+
+        <form asp-action="DataForm" method="post" class="space-y-5">
+            <div class="grid gap-5 sm:grid-cols-2">
+                <!-- Obstacle Name -->
+                <div class="sm:col-span-2">
+                    <label asp-for="ObstacleName" class="block text-sm font-medium text-gray-800 mb-1">Obstacle Name</label>
+                    <input asp-for="ObstacleName"
+                           class="block w-full rounded-lg border-gray-300 focus:border-indigo-600 focus:ring-indigo-600 px-3 py-2"
+                           placeholder="e.g., Wall, Ramp" />
+                    <span asp-validation-for="ObstacleName" class="text-sm text-red-600"></span>
+                </div>
+
+                <!-- Height -->
+                <div>
+                    <label asp-for="ObstacleHeight" class="block text-sm font-medium text-gray-800 mb-1">
+                        Obstacle Height (meters)
+                    </label>
+                    <input asp-for="ObstacleHeight" type="number" step="0.01" min="0"
+                           class="block w-full rounded-lg border-gray-300 focus:border-indigo-600 focus:ring-indigo-600 px-3 py-2"
+                           placeholder="e.g., 2.5" />
+                    <span asp-validation-for="ObstacleHeight" class="text-sm text-red-600"></span>
+                </div>
+
+                <!-- Description -->
+                <div class="sm:col-span-2">
+                    <label asp-for="ObstacleDescription" class="block text-sm font-medium text-gray-800 mb-1">
+                        Obstacle Description
+                    </label>
+                    <textarea asp-for="ObstacleDescription" rows="4"
+                              class="block w-full rounded-lg border-gray-300 focus:border-indigo-600 focus:ring-indigo-600 px-3 py-2"
+                              placeholder="Describe the obstacle, materials, location, etc."></textarea>
+                    <span asp-validation-for="ObstacleDescription" class="text-sm text-red-600"></span>
+                </div>
+            </div>
+
+            <!-- Map block -->
+<div class="space-y-3">
+    <div class="flex items-center justify-between">
+        <label class="block text-sm font-medium text-gray-800">Locate the obstacle on the map</label>
+    </div>
+    <div id="map" style="height: 420px; border-radius: 0.75rem; overflow: hidden; border: 1px solid #e5e7eb;"></div>
+
+    <!-- Hidden field that carries the FeatureCollection as JSON back to the server -->
+    <input type="hidden" asp-for="GeometryGeoJson" id="GeometryGeoJson" />
+
+    <!-- Show coordinates in read only field -->
+    <div>
+        <label for="CoordinatesPreview" class="block text-sm font-medium text-gray-800 mb-1">Coordinates Preview</label>
+        <textarea id="CoordinatesPreview" class="block w-full rounded-lg border-gray-300 px-3 py-2 text-sm" rows="5" readonly placeholder="Draw on the map to see coordinates here..."></textarea>
+    </div>
+</div>
+
+            <div class="pt-2">
+                <button type="submit"
+                        class="inline-flex items-center justify-center rounded-lg bg-indigo-600 px-4 py-2 text-white hover:bg-indigo-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                    Submit Data
+                </button>
+            </div>
+        </form>
+    </div>
+</section>
+
+@section Scripts {
+    <!-- If you use client-side validation, keep the standard validation partial -->
+    <partial name="_ValidationScriptsPartial" />
+
+ <!-- Links to Leaflet CSS and Draw Sources -->
+ <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+     integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+     crossorigin=""/>
+ <link rel="stylesheet" href="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.css" />
+
+ <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+     integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+     crossorigin=""></script>
+ <script src="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.js"></script> 
+ 
+
+ <script>
+     var map = L.map('map').setView([51.505, -0.09], 13);  // Center the map on a location
+
+         // Add a base map layer
+         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+             attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+         }).addTo(map);
+
+             
+         // Initialize the feature group that will hold the drawn shapes
+         var drawnItems = new L.FeatureGroup();
+         map.addLayer(drawnItems);
+
+         // Creates the drawing control on the left hand side
+         // The drawing control enables drawing of markers, polygons, and polylines
+         var drawControl = new L.Control.Draw({
+             draw: {
+                 polygon: false,
+                 polyline: true,
+                 marker: true,
+                 circle: false,  // Disable circle drawing
+                 rectangle: true
+             },
+             edit: {
+                 featureGroup: drawnItems
+             }
+         });
+         map.addControl(drawControl);
+          
+
+         // Event handling when a layer is drawn on the map
+         map.on(L.Draw.Event.CREATED, function (e) {
+                 layer = e.layer;
+
+             drawnItems.addLayer(layer);
+
+             // Get the GeoJSON representation of the drawn layer
+             var geoJsonData = layer.toGeoJSON();
+             var geoJsonString = JSON.stringify(geoJsonData);
+
+             // Set the GeoJSON string into the hidden input field in the form
+             document.getElementById('GeometryGeoJson').value = geoJsonString;
+             document.getElementById('CoordinatesPreview').value = geoJsonString;
+         });
+ </script>
+}

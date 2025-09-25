@@ -18,6 +18,15 @@ builder.Services.AddDbContext<DataContext>(options =>
 
 var app = builder.Build();
 
+/*
+// Dependency Injection (Register services)
+// Get connection string directly from configuration in appsetting.json
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+// Register your service that uses the connection
+builder.Services.AddSingleton(new MySqlConnection(connectionString));
+*/
+
+
 app.MapDefaultEndpoints();
 var dataContext = app.Services.GetRequiredService<DataContext>();
 

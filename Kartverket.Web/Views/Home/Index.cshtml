@@ -1,4 +1,35 @@
-﻿@{
+@model string
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<section class="mx-auto max-w-3xl">
+    <div class="text-center space-y-4">
+        <h1 class="text-3xl sm:text-4xl font-bold tracking-tight">Welcome</h1>
+        <p class="text-base sm:text-lg text-gray-700">
+            Learn about
+            <a class="text-indigo-700 hover:underline"
+               href="https://learn.microsoft.com/aspnet/core">
+                building Web apps with ASP.NET Core
+            </a>.
+        </p>
+        @if (!string.IsNullOrWhiteSpace(Model))
+        {
+            <p class="text-gray-800">@Model</p>
+        }
+        <div class="pt-4">
+            <a asp-action="DataForm" asp-controller="Obstacle"
+               class="inline-flex items-center rounded-lg px-4 py-2 ring-1 ring-indigo-600 text-indigo-700 hover:bg-indigo-50">
+                Register Obstacle
+            </a>
+        </div>
+    </div>
+</section>
+
+
+
+@*
+@{
     ViewData["Title"] = "Home Page";
 }
 
@@ -6,3 +37,7 @@
     <h1 class="display-4">Welcome</h1>
     <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 </div>
+<div class="text-center">
+    <a asp-action="DataForm">Register Obstacle</a>
+</div>
+*@
