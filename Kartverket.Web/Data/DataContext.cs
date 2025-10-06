@@ -6,6 +6,8 @@ namespace Kartverket.Web.Data
     public class DataContext : DbContext
     {
         public DbSet<TableClass> TableClasses { get; set; } = null!;
+        public DbSet<ObstacleData> ObstacleDatas { get; set; } = null!;
+
         public DataContext()
         {
         }
@@ -22,7 +24,13 @@ namespace Kartverket.Web.Data
                 entity.HasKey(e => e.Id);
                 entity.Property(e => e.Name).IsRequired().HasMaxLength(100);
             });
-            
+            modelBuilder.Entity<ObstacleData>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.ObstacleName).IsRequired().HasMaxLength(200);
+                entity.Property(e => e.ObstacleHeight).IsRequired();
+                entity.Property(e => e.ObstacleDescription).HasMaxLength(1000);
+            });
             base.OnModelCreating(modelBuilder);
         }
 
