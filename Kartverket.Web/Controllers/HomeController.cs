@@ -52,7 +52,7 @@ public ActionResult DataForm()
 
 // blir kalt etter at vi trykker på "Submit Data" knapp i DataForm viewet
 [HttpPost]
-public ActionResult DataForm(ObstacleData obstacledata)
+public ActionResult DataForm(Models.ObstacleData obstacledata)
 {
     return View("Overview", obstacledata);
 }
