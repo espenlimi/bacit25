@@ -10,7 +10,7 @@
             <p class="text-gray-600 mt-1">Please register an obstacle:</p>
         </header>
 
-        <form asp-action="DataForm" method="post" class="space-y-5">
+        <form asp-action="DataForm" method="post" class="space-y-5" id="obstacleForm">
             <div class="grid gap-5 sm:grid-cols-2">
                 <!-- Obstacle Name -->
                 <div class="sm:col-span-2">
@@ -117,19 +117,51 @@
          map.addControl(drawControl);
           
 
-         // Event handling when a layer is drawn on the map
-         map.on(L.Draw.Event.CREATED, function (e) {
-                 layer = e.layer;
+             // hold the form element in form variable
+    var form = document.getElementById('obstacleForm');
 
-             drawnItems.addLayer(layer);
+    // --- Capture location data ---
+function captureData() {
+    // Convert all layers to one GeoJSON object 
+    var geojson = drawnItems.toGeoJSON();
 
-             // Get the GeoJSON representation of the drawn layer
-             var geoJsonData = layer.toGeoJSON();
-             var geoJsonString = JSON.stringify(geoJsonData);
+    // Save JSON text to hidden field 
+    document.getElementById('GeometryGeoJson').value = JSON.stringify(geojson);
 
-             // Set the GeoJSON string into the hidden input field in the form
-             document.getElementById('GeometryGeoJson').value = geoJsonString;
-             document.getElementById('CoordinatesPreview').value = geoJsonString;
-         });
+    // Save preview text to hidden field
+    document.getElementById('CoordinatesPreview').value = JSON.stringify(geojson);;
+}
+
+
+    function onCreated(e) {
+    drawnItems.addLayer(e.layer);
+    captureData();
+    }
+
+    function onEdited(e) {
+        captureData();
+    }
+
+    function onDeleted(e) {
+        captureData();
+    }
+
+    // Event handlers
+    map.on(L.Draw.Event.CREATED, onCreated);
+    map.on(L.Draw.Event.EDITED, onEdited);
+    map.on(L.Draw.Event.DELETED, onDeleted);
+
+     // marker validation: ensure at least one marker exists
+    form.addEventListener('submit', function (ev) {
+    // husk å slette debuggeren etter dere leverer koden
+    //debugger 
+  if (drawnItems.getLayers().length === 0) {
+      ev.preventDefault();   // stops submission when the condition is true
+    alert('Please add a marker on the map before submitting.');
+  } else {
+    captureData(); // ensure hidden field is updated
+  }
+});
+         
  </script>
 }
