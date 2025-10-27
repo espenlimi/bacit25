@@ -1,4 +1,7 @@
 using Kartverket.Web.Data;
+using Kartverket.Web.Repositories;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,6 +21,7 @@ builder.Services.AddDbContext<DataContext>(options =>
     options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
 });
 
+SetupAuthentication(builder);
 
 var app = builder.Build();
 
@@ -29,7 +33,7 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddSingleton(new MySqlConnection(connectionString));
 */
 app.MapDefaultEndpoints();
-using (var scope = app.Services.CreateScope()) 
+using (var scope = app.Services.CreateScope())
 {
     /*
     Migration howto:   
@@ -44,8 +48,9 @@ using (var scope = app.Services.CreateScope())
     6. Restart the application, the code below db.Database.Migrate(); should apply the changes to the database
     */
 
-    var db = scope.ServiceProvider.GetRequiredService<DataContext>(); 
-    db.Database.Migrate(); 
+    var db = scope.ServiceProvider.GetRequiredService<DataContext>();
+    db.Database.Migrate();
+
 }
 
 // Configure the HTTP request pipeline.
@@ -69,4 +74,49 @@ app.MapControllerRoute(
     .WithStaticAssets();
 
 
+app.UseAuthentication();
+app.UseAuthorization();
+
 app.Run();
+
+void SetupAuthentication(WebApplicationBuilder builder)
+{
+    //Setup for Authentication
+    builder.Services.Configure<IdentityOptions>(options =>
+    {
+        // Default Lockout settings.
+        options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+        options.Lockout.MaxFailedAccessAttempts = 5;
+        options.Lockout.AllowedForNewUsers = false;
+        options.SignIn.RequireConfirmedPhoneNumber = false;
+        options.SignIn.RequireConfirmedEmail = false;
+        options.SignIn.RequireConfirmedAccount = false;
+        options.User.RequireUniqueEmail = true;
+    });
+
+    builder.Services
+        .AddIdentityCore<IdentityUser>()
+        .AddRoles<IdentityRole>()
+        .AddEntityFrameworkStores<DataContext>()
+        .AddSignInManager()
+        .AddDefaultTokenProviders();
+
+    builder.Services.AddAuthentication(o =>
+    {
+        o.DefaultScheme = IdentityConstants.ApplicationScheme;
+        o.DefaultSignInScheme = IdentityConstants.ExternalScheme;
+
+    }).AddIdentityCookies(o => { });
+
+    builder.Services.AddTransient<IEmailSender, AuthMessageSender>();
+}
+public class AuthMessageSender : IEmailSender
+{
+    public Task SendEmailAsync(string email, string subject, string htmlMessage)
+    {
+        Console.WriteLine(email);
+        Console.WriteLine(subject);
+        Console.WriteLine(htmlMessage);
+        return Task.CompletedTask;
+    }
+}

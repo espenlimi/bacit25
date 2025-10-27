@@ -1,9 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 
 namespace Kartverket.Web.Data
 {
 
-    public class DataContext : DbContext
+    public class DataContext : IdentityDbContext<IdentityUser>
     {
         public DbSet<TableClass> TableClasses { get; set; } = null!;
         public DbSet<ObstacleData> ObstacleDatas { get; set; } = null!;
@@ -11,11 +14,11 @@ namespace Kartverket.Web.Data
         public DataContext()
         {
         }
-
         public DataContext(DbContextOptions<DataContext> options) : base(options)
         {
 
         }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 

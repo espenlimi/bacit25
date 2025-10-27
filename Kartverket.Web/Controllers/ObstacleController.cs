@@ -2,22 +2,27 @@ using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Kartverket.Web.Models;
 using Kartverket.Web.Data;
+using Kartverket.Web.Repositories;
 
 namespace Kartverket.Web.Controllers;
 
 public class ObstacleController : Controller
 {
     private readonly DataContext dataContext;
+    private readonly IObstacleRepository obstacleRepository;
 
-    public ObstacleController(DataContext dataContext)
+    public ObstacleController(DataContext dataContext,
+                              IObstacleRepository obstacleRepository)
     {
         this.dataContext = dataContext;
+        this.obstacleRepository = obstacleRepository;
     }
 
     // blir kalt etter at vi trykker på "Register Obstacle" lenken i Index viewet
     [HttpGet]
-    public ActionResult DataForm()
+    public async Task<ActionResult> DataForm()
     {
+        var data = await obstacleRepository.GetAllObstacleData();
         return View();
     }
 
