@@ -1,85 +1,81 @@
 ﻿using Kartverket.Web.Controllers;
 using Kartverket.Web.Data;
+using Kartverket.Web.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.InMemory; // <-- Add this using directive
+using Xunit;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Kartverket.Web.UnitTests.Controllers
 {
     public class ObstacleControllerUnitTests
     {
-        private DataContext dataContext { get; set; }
+        private DataContext dataContext = null!;
+        private IObstacleRepository obstacleRepository = null!;
+
         [Fact]
-        public void DataFormReturnsCorrectView()
+        public async Task DataFormReturnsCorrectView()
         {
-            // Arrange
-            var controller = new ObstacleController(null);
+            SetupDatabase();
+            obstacleRepository = new FakeObstacleRepository();
+            var controller = new ObstacleController(dataContext, obstacleRepository);
             controller.ModelState.AddModelError("ObstacleName", "Required");
-
-            // Act
-            var result = controller.DataForm() as ViewResult;
-
-            // Assert
-            Assert.Null(result.ViewName);
+            var actionResult = await controller.DataForm();
+            var viewResult = Assert.IsType<ViewResult>(actionResult);
+            Assert.Null(viewResult.ViewName);
         }
 
         [Fact]
         public void DataForm_Post_ValidModel_SavesToDatabase()
         {
-            // Arrange
             SetupDatabase();
-
-            var controller = new ObstacleController(dataContext);
+            obstacleRepository = new FakeObstacleRepository();
+            var controller = new ObstacleController(dataContext, obstacleRepository);
             var obstacleData = new Kartverket.Web.Models.ObstacleData
             {
                 ObstacleName = "Test Obstacle",
                 ObstacleHeight = 10,
                 ObstacleDescription = "This is a test obstacle."
             };
-
-            // Act
-            var result = controller.DataForm(obstacleData) as ViewResult;
-
-            // Assert
+            var vr = Assert.IsType<ViewResult>(controller.DataForm(obstacleData));
             var savedObstacle = dataContext.ObstacleDatas.First();
             Assert.Equal("This is a test obstacle.", savedObstacle.ObstacleDescription);
         }
 
-        private  void SetupDatabase()
+        private void SetupDatabase()
         {
             var options = new DbContextOptionsBuilder<DataContext>()
-                            .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+                            .UseInMemoryDatabase(Guid.NewGuid().ToString())
                             .Options;
             dataContext = new DataContext(options);
-            
         }
 
         [Fact]
         public void DataForm_Post_DraftModel_DoesNotSaveToDatabase()
         {
-            // Arrange
-            var controller = CreateControllerUnderTest();
+            SetupDatabase();
+            obstacleRepository = new FakeObstacleRepository();
+            var controller = new ObstacleController(dataContext, obstacleRepository);
             var obstacleData = new Kartverket.Web.Models.ObstacleData();
-          
-            // Act
-            var result = controller.DataForm(obstacleData) as ViewResult;
-
-            // Assert
+            var vr = Assert.IsType<ViewResult>(controller.DataForm(obstacleData));
             var savedObstacle = dataContext.ObstacleDatas.FirstOrDefault();
             Assert.Null(savedObstacle);
         }
 
-        private ObstacleController CreateControllerUnderTest()
+        private class FakeObstacleRepository : IObstacleRepository
         {
-            SetupDatabase();
-
-            var controller = new ObstacleController(dataContext);
-            return controller;
+            public Task<IEnumerable<ObstacleData>> GetAllObstacleData()
+            {
+                IEnumerable<ObstacleData> list = Array.Empty<ObstacleData>();
+                return Task.FromResult(list);
+            }
+            public Task InsertObstacleData(ObstacleData data)
+            {
+                return Task.CompletedTask;
+            }
         }
     }
 }

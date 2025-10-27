@@ -49,13 +49,6 @@ namespace Kartverket.Web.Repositories
                     VALUES (@ObstacleName, @ObstacleHeight, @ObstacleDescription)";
             await connection.ExecuteAsync(sql, data);
         }
-
     }
 
-    internal interface IObstacleRepository
-    {  
-        Task<IEnumerable<ObstacleData>> GetAllObstacleData();
-        Task<ObstacleData?> GetObstacleData(long id);
-        Task InsertObstacleData(ObstacleData data);
-    }
 }

@@ -25,4 +25,8 @@
     <ProjectReference Include="..\Kartverket.Aspire\Kartverket.Aspire.ServiceDefaults\Kartverket.Aspire.ServiceDefaults.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="UnitTests\Controllers\" />
+  </ItemGroup>
+
 </Project>
