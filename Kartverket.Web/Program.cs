@@ -12,9 +12,13 @@ builder.AddServiceDefaults();
 builder.Services.AddControllersWithViews();
 var connectionName = "kartverketdb";
 builder.AddMySqlDataSource(connectionName: connectionName);
-
-
 var connectionString = builder.Configuration.GetConnectionString(connectionName);
+
+builder.Services.AddScoped<IObstacleRepository>(provider =>
+{
+    var connectionString = provider.GetRequiredService<IConfiguration>().GetConnectionString(connectionName);
+    return new ObstacleRepository(connectionString);
+});
 
 builder.Services.AddDbContext<DataContext>(options =>
 {

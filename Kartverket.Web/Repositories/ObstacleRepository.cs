@@ -24,7 +24,7 @@ namespace Kartverket.Web.Repositories
         public ObstacleRepository(string connectionString) : base(connectionString)
         {
         }
-
+      
 
         public async Task<IEnumerable<ObstacleData>> GetAllObstacleData()
         {
