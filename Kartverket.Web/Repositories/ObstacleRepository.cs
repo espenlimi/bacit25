@@ -30,14 +30,14 @@ namespace Kartverket.Web.Repositories
         {
             using var connection = CreateConnection();
             var sql = @"SELECT Id, ObstacleName, ObstacleHeight, ObstacleDescription 
-                      FROM ObstacleData";
+                      FROM ObstacleDatas";
             return await connection.QueryAsync<ObstacleData>(sql);
         }
         public async Task<ObstacleData?> GetObstacleData(long id)
         {
             using var connection = CreateConnection();
             var sql = @"SELECT Id, ObstacleName, ObstacleHeight, ObstacleDescription 
-                      FROM ObstacleData
+                      FROM ObstacleDatas
                       WHERE id = @id";
             return await connection.QueryFirstOrDefaultAsync<ObstacleData>(sql, new { id });
         }
@@ -45,7 +45,7 @@ namespace Kartverket.Web.Repositories
         {
             using var connection = CreateConnection();
             var sql = @"INSERT INTO 
-                    ObstacleData (ObstacleName, ObstacleHeight, ObstacleDescription) 
+                    ObstacleDatas (ObstacleName, ObstacleHeight, ObstacleDescription) 
                     VALUES (@ObstacleName, @ObstacleHeight, @ObstacleDescription)";
             await connection.ExecuteAsync(sql, data);
         }
