@@ -29,16 +29,26 @@ namespace Kartverket.Web.Repositories
         public async Task<IEnumerable<ObstacleData>> GetAllObstacleData()
         {
             using var connection = CreateConnection();
-            var sql = "SELECT Id, ObstacleName, ObstacleHeight, ObstacleDescription FROM ObstacleData";
+            var sql = @"SELECT Id, ObstacleName, ObstacleHeight, ObstacleDescription 
+                      FROM ObstacleDatas";
             return await connection.QueryAsync<ObstacleData>(sql);
         }
-
+        public async Task<ObstacleData?> GetObstacleData(long id)
+        {
+            using var connection = CreateConnection();
+            var sql = @"SELECT Id, ObstacleName, ObstacleHeight, ObstacleDescription 
+                      FROM ObstacleDatas
+                      WHERE id = @id";
+            return await connection.QueryFirstOrDefaultAsync<ObstacleData>(sql, new { id });
+        }
         public async Task InsertObstacleData(ObstacleData data)
         {
             using var connection = CreateConnection();
-            var sql = "INSERT INTO ObstacleData (ObstacleName, ObstacleHeight, ObstacleDescription) VALUES (@ObstacleName, @ObstacleHeight, @ObstacleDescription)";
+            var sql = @"INSERT INTO 
+                    ObstacleDatas (ObstacleName, ObstacleHeight, ObstacleDescription) 
+                    VALUES (@ObstacleName, @ObstacleHeight, @ObstacleDescription)";
             await connection.ExecuteAsync(sql, data);
         }
-
     }
+
 }
